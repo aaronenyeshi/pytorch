@@ -269,7 +269,7 @@ jobs:
       ENABLE_SLOW_TEST: ''
       ENABLE_DOCS_TEST: ''
       ENABLE_BACKWARDS_COMPAT_TEST: ''
-      ENABLE_XLA_TEST: ''
+      ENABLE_XLA_TEST: 1
       ENABLE_NOARCH_TEST: 1
       NUM_TEST_SHARDS: 2
       MULTIGPU_RUNNER_TYPE: linux.16xlarge.nvidia.gpu
@@ -434,6 +434,8 @@ jobs:
             --env-file="/tmp/github_env_${GITHUB_RUN_ID}" \
             --ulimit stack=10485760:83886080 \
             --security-opt seccomp=unconfined \
+            --cap-add=SYS_PTRACE \
+            --ipc=host \
             --cap-add=SYS_PTRACE \
             --shm-size="${SHM_SIZE}" \
             --tty \
