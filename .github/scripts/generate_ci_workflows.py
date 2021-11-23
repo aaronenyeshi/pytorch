@@ -631,6 +631,7 @@ MACOS_WORKFLOWS = [
         build_environment="macos-10-15-py3-x86-64",
         xcode_version="12",
         test_runner_type=MACOS_TEST_RUNNER_10_15,
+        num_test_shards=2,
         ciflow_config=CIFlowConfig(
             labels={LABEL_CIFLOW_MACOS},
         ),
