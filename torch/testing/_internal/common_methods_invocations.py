@@ -7781,6 +7781,13 @@ def ref_pairwise_distance(input1, input2):
     pass
 
 
+def ref_transpose(x, dim0, dim1):
+    if dim0 == dim1 and len(x.shape) == 0:
+        # shortcut numpy inability to apply swapaxes to scalar
+        return x
+    # torch.transpose corresponds to numpy.swapaxes
+    return x.swapaxes(dim0, dim1)
+
 # Operator database (sorted alphabetically)
 op_db: List[OpInfo] = [
     UnaryUfuncInfo('abs',
@@ -12494,6 +12501,18 @@ op_db: List[OpInfo] = [
            supports_out=False,
            supports_forward_ad=True,
            # https://github.com/pytorch/pytorch/issues/66357
+           check_batched_forward_grad=False,
+           sample_inputs_func=sample_inputs_transpose_swapdims),
+    OpInfo('transpose_copy',
+           ref=lambda x, dim0, dim1: ref_transpose(x, dim0, dim1).copy(),
+           assert_jit_shape_analysis=True,
+           dtypes=all_types_and_complex_and(torch.bool, torch.bfloat16, torch.half),
+           # supports_out=False,
+           supports_forward_ad=True,
+           skips=(
+               DecorateInfo(unittest.skip("Skipped!"), "TestJit", "test_variant_consistency_jit",
+                            dtypes=(torch.float32,)),
+           ),
            check_batched_forward_grad=False,
            sample_inputs_func=sample_inputs_transpose_swapdims),
     OpInfo('T',
